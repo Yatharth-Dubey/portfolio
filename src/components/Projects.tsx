@@ -112,7 +112,7 @@ const Projects: React.FC = () => {
     },
     {
       id: 2,
-      title: "SIR Evaluation System (Admin Panel)",
+      title: "SIR Evaluation System",
       description: "Admin dashboard to manage student feedback and evaluation with secure login system.",
       image: [sir1, sir2, sir3, sir4, sir5, sir6],
       techStack: ["React", "JavaScript", "MySQL", "Express", "JWT"],
@@ -138,7 +138,7 @@ const Projects: React.FC = () => {
       techStack: ["React", "CSS", "JavaScript", "MySQL", "Express"],
       githubUrl: "#",
       liveUrl: "https://examatom.com/",
-      category: "Web App"
+      category: "Full Stack"
     },
     // {
     //   id: 5,
@@ -156,7 +156,7 @@ const Projects: React.FC = () => {
       description: "Full-stack blogging platform with authentication and content management.",
       image: [blogpick1, blogpick2, blogpick3],
       techStack: ["React", "CSS", "MongoDB", "Express", "JWT"],
-      githubUrl: "#",
+      githubUrl: "https://github.com/Yatharth-Dubey/BlogPick",
       liveUrl: "#",
       category: "Full Stack"
     },
@@ -166,7 +166,7 @@ const Projects: React.FC = () => {
       description: "Simple weather app using API integration.",
       image: [weather],
       techStack: ["HTML", "JavaScript", "API", "CSS"],
-      githubUrl: "#",
+      githubUrl: "https://github.com/Yatharth-Dubey/WeatherApp",
       liveUrl: "#",
       category: "JavaScript"
     },
@@ -176,7 +176,7 @@ const Projects: React.FC = () => {
       description: "Classic snake game built using Python with custom features.",
       image: [snakegame],
       techStack: ["Python", "Pygame"],
-      githubUrl: "#",
+      githubUrl: "https://github.com/Yatharth-Dubey/snake-game",
       liveUrl: "#",
       category: "Python"
     }
@@ -245,24 +245,38 @@ const Projects: React.FC = () => {
                   ))}
                 </div>
                 <div className="featured-actions">
-                  <a 
-                    href={featuredProject.githubUrl} 
-                    target="_blank" 
+                  <a
+                    href={featuredProject.githubUrl !== "#" ? featuredProject.githubUrl : undefined}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="action-link"
-                    onClick={playClickSound}
+                    className={`action-link ${featuredProject.githubUrl === "#" ? "disabled tooltip" : ""}`}
+                    data-tooltip={featuredProject.githubUrl === "#" ? "Private Repository • Contact for access" : "View on GitHub"}
+                    onClick={(e) => {
+                      if (featuredProject.githubUrl === "#") {
+                        e.preventDefault();
+                      } else {
+                        playClickSound();
+                      }
+                    }}
                   >
                     <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
                     </svg>
                     GitHub
                   </a>
-                  <a 
-                    href={featuredProject.liveUrl} 
-                    target="_blank" 
+                  <a
+                    href={featuredProject.liveUrl !== "#" ? featuredProject.liveUrl : undefined}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="action-link primary"
-                    onClick={playClickSound}
+                    className={`action-link ${featuredProject.liveUrl === "#" ? "disabled tooltip" : ""}`}
+                    data-tooltip={featuredProject.liveUrl === "#" ? "In Use • Contact for preview" : "View Live"}
+                    onClick={(e) => {
+                      if (featuredProject.liveUrl === "#") {
+                        e.preventDefault();
+                      } else {
+                        playClickSound();
+                      }
+                    }}
                   >
                     <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeLinecap="round"/>
@@ -304,26 +318,38 @@ const Projects: React.FC = () => {
                   ))}
                 </div>
                 <div className="card-actions">
-                  <a 
-                    href={project.githubUrl} 
-                    target="_blank" 
+                  <a
+                    href={project.githubUrl !== "#" ? project.githubUrl : undefined}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="action-link"
-                    aria-label="GitHub Repository"
-                    onClick={playClickSound}
+                    className={`action-link ${project.githubUrl === "#" ? "disabled tooltip" : ""}`}
+                    data-tooltip={project.githubUrl === "#" ? "Private Repository • Contact for access" : "View on GitHub"}
+                    onClick={(e) => {
+                      if (project.githubUrl === "#") {
+                        e.preventDefault();
+                      } else {
+                        playClickSound();
+                      }
+                    }}
                   >
                     <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
                     </svg>
                     GitHub
                   </a>
-                  <a 
-                    href={project.liveUrl} 
-                    target="_blank" 
+                  <a
+                    href={project.liveUrl !== "#" ? project.liveUrl : undefined}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="action-link"
-                    aria-label="Demo"
-                    onClick={playClickSound}
+                    className={`action-link ${project.liveUrl === "#" ? "disabled tooltip" : ""}`}
+                    data-tooltip={project.liveUrl === "#" ? "Contact for preview" : "View Live"}
+                    onClick={(e) => {
+                      if (project.liveUrl === "#") {
+                        e.preventDefault();
+                      } else {
+                        playClickSound();
+                      }
+                    }}
                   >
                     <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeLinecap="round"/>

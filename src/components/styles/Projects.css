@@ -392,3 +392,39 @@
     font-size: 0.875rem;
   }
 }
+
+/* Disabled state */
+.action-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Tooltip base */
+.tooltip {
+  position: relative;
+}
+
+/* Tooltip text */
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 130%;     /* thoda upar */
+  left: 150%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s ease;
+  z-index: 9999;
+}
+
+/* Show on hover */
+.tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
