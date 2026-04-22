@@ -8,6 +8,7 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { playClickSound } from "./utils/sound";
 import "./index.css";
+import profileImg from "./assets/profile.jpg";
 
 const startTour = () => {
   const driverObj = driver({
@@ -110,9 +111,9 @@ export default function App() {
       <Hero 
         name="Yatharth Dubey" 
         role="Building scalable web apps & exploring full-stack development" 
-        imageUrl="src/assets/profile.jpg"
+        imageUrl={profileImg}
       />
-      <About imageUrl="src/assets/profile.jpg" />
+      <About imageUrl={profileImg} />
       <Projects />
       <Contact />
     </div>

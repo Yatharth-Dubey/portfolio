@@ -3,6 +3,8 @@ import "./styles/Hero.css";
 import { useEffect } from "react";
 import { playClickSound } from "../utils/sound";
 import gsap from "gsap";
+import githubIcon from "../assets/github.png";
+import linkedinIcon from "../assets/linkedin.png";
 
 type HeroProps = {
   name: string;
@@ -86,7 +88,7 @@ export default function Hero({ name, role, imageUrl }: HeroProps) {
               aria-label="GitHub"
               onClick={playClickSound}
             >
-              <img src="src/assets/github.png" alt="github" className="heroicon" />
+              <img src={githubIcon} alt="github" className="heroicon" />
             </a>
             <a 
               href="https://www.linkedin.com/in/yatharth-dubey-34a532316" 
@@ -96,7 +98,7 @@ export default function Hero({ name, role, imageUrl }: HeroProps) {
               aria-label="LinkedIn"
               onClick={playClickSound}
             >
-              <img src="src/assets/linkedin.png" alt="linkedin" className="heroicon"/>
+              <img src={linkedinIcon} alt="linkedin" className="heroicon"/>
             </a>
           </div>
         </div>
