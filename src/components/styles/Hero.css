@@ -210,7 +210,7 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: var(--bg-card);
+  background: var(--bg-gitlink);
   color: var(--text-primary);
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);

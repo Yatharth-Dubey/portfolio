@@ -143,7 +143,7 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
     playClickSound();
     const link = document.createElement('a');
     link.href = '/resume.pdf';
-    link.download = 'My_Resume.pdf';
+    link.download = 'Resume_YatharthDubey.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -195,7 +195,7 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
                 <div className="about-profile-details">
                   <div className="about-profile-detail-item">
                     <User size={14} />
-                    <span>B.Tech CSE Student</span>
+                    <span>B.Tech in Computer Science Engineering</span>
                   </div>
                   <div className="about-profile-detail-item">
                     <MapPin size={14} />
@@ -203,26 +203,18 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
                   </div>
                   <div className="about-profile-detail-item">
                     <Mail size={14} />
-                    <span>yatharth@example.com</span>
+                    <span>yatharthdubey12dec2004@gmail.com</span>
                   </div>
                   <div className="about-profile-detail-item">
                     <Calendar size={14} />
                     <span>Available for opportunities</span>
                   </div>
                 </div>
-                
-                <div className="about-availability-badge">
-                  <span className="about-status-dot"></span>
-                  Open to Work
-                </div>
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Right Column - Main Content */}
         <div className={`about-content-col ${isVisible ? 'fade-in' : ''}`} ref={contentRef}>
-          {/* Hero Stats Section */}
           <div className="about-stats-grid">
             {statsData.map((stat, idx) => (
               <div key={idx} className="about-stat-card">

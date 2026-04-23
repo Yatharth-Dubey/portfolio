@@ -6,6 +6,7 @@
   --bg-secondary: #111827;
   --bg-tertiary: #0f172a;
   --bg-card: rgba(22, 27, 34, 0.7);
+  --bg-gitlink: #797386;
   --bg-card-solid: #161b22;
   --text-primary: #e6edf3;
   --text-secondary: #9da7b3;
@@ -25,6 +26,7 @@
   --bg-tertiary: #e8e1d8;
 
   --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-gitlink: rgba(255, 255, 255, 0.65);
   --bg-card-solid: #fbf9f6;
 
   --text-primary: #2c2a28;
