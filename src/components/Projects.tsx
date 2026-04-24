@@ -193,18 +193,15 @@ const Projects: React.FC = () => {
 
   return (
     <section ref={sectionRef} id="projects" className="projects-section page-section">
-      {/* Animated Background Blobs */}
       <div className="projects-bg-blob projects-bg-blob-1"></div>
       <div className="projects-bg-blob projects-bg-blob-2"></div>
       
       <div className="projects-container">
-        {/* Section Header */}
         <div className="section-header">
           <h2 className="section-title">Projects</h2>
           <p className="section-subtitle">Some things I've built</p>
         </div>
 
-        {/* Filter Tabs */}
         <div className="filter-tabs">
           {categories.map(category => (
             <button
@@ -217,7 +214,6 @@ const Projects: React.FC = () => {
           ))}
         </div>
 
-        {/* Featured Project (if in filtered view) */}
         {featuredProject && activeFilter === 'All' && (
           <div className="featured-project">
             <div className="featured-card">
@@ -291,7 +287,6 @@ const Projects: React.FC = () => {
           </div>
         )}
 
-        {/* Projects Grid */}
         <div className="projects-grid">
           {regularProjects.map(project => (
             <div key={project.id} className="project-card">

@@ -48,7 +48,6 @@ export default function Hero({ name, role, imageUrl }: HeroProps) {
 
   return (
     <section id="hero" className="hero">
-      {/* Animated Background Blobs */}
       <div className="hero-bg-blob hero-bg-blob-1"></div>
       <div className="hero-bg-blob hero-bg-blob-2"></div>
       

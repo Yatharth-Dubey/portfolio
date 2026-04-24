@@ -57,7 +57,6 @@ const sectionRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    // Validation helpers
     const validateName = (name: string) => name.trim().length >= 2;
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateMessage = (message: string) => message.trim().length >= 10;
@@ -84,7 +83,6 @@ const sectionRef = useRef(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Mark all fields as touched on submit attempt
         setTouched({ name: true, email: true, message: true });
         if (!isFormValid) return;
         playClickSound();
@@ -106,7 +104,6 @@ const sectionRef = useRef(null);
             setTimeout(() => setSuccess(false), 5000);
         } catch (error) {
             console.error(error);
-            // Optional: add a user-facing error state here
         } finally {
             setLoading(false);
         }
@@ -122,7 +119,6 @@ const sectionRef = useRef(null);
             <div className="yath-contact-bg-blob yath-contact-bg-blob-2" />
             
             <div className="yath-contact-container">
-                {/* Left Side - Form */}
                 <div className="yath-contact-form-card yath-glass-card">
                     {success ? (
                         <div className="yath-success-box">
@@ -233,7 +229,6 @@ const sectionRef = useRef(null);
                     )}
                 </div>
 
-                {/* Right Side - Info Panel */}
                 <div className="yath-contact-info yath-glass-card">
                     <div className="yath-availability-badge">
                         <span className="yath-status-dot"></span>

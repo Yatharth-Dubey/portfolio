@@ -49,19 +49,33 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
   }, []);
   
   const skillTags: string[] = [
-    "React", "JavaScript", "TypeScript", 
+    "React", "JavaScript", "Python", "C/C++", "TypeScript", 
     "Node.js", "Express.js", 
-    "MongoDB", "MySQL",
+    "MongoDB", "MySQL", "Google OAuth", "WebRTC",
     "JWT Auth", "REST APIs",
-    "HTML", "CSS", "Tailwind",
-    "Git & GitHub", "PostMan"
+    "HTML", "CSS", "EmailJs",
+    "Git & GitHub(active open-source usage)", "PostMan", "Docker", "Vercel", "Linux", "Windows"
+  ];
+
+  const experienceData = [
+    {
+      role: "Full-Stack Intern",
+      company: "Pulse by OptiMaxin",
+      duration: "Internship",
+      points: [
+        "Assisted in full-stack feature development within a professional product environment",
+        "Contributed to assigned tasks from development to deployment",
+        "Collaborated with team members and communicated progress effectively",
+        "Recognized for reliability, quick learning, and code quality"
+      ]
+    }
   ];
 
   const statsData: StatItem[] = [
-    { value: "10+", label: "Projects Completed", icon: <Code size={20} /> },
-    { value: "6449", label: "CodeVita Rank", icon: <TrendingUp size={20} /> },
-    { value: "8.75", label: "Current SGPA", icon: <Award size={20} /> },
-    { value: "3+", label: "Hackathons", icon: <Zap size={20} /> }
+    { value: "9+", label: "Worked On Projects", icon: <Code size={20} /> },
+    { value: "6449", label: "CodeVita Rank Season 12", icon: <TrendingUp size={20} /> },
+    { value: "8.74", label: "Current SGPA", icon: <Award size={20} /> },
+    { value: "3+", label: "Hackathon Paticipations", icon: <Zap size={20} /> }
   ];
 
   const highlightData: HighlightItem[] = [
@@ -74,10 +88,10 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
 
   const educationData = [
     {
-      degree: "B.Tech Computer Science",
-      institution: "Current University",
-      year: "2023 - Present",
-      details: "6th Semester | 8.75 SGPA (5th Sem)",
+      degree: "Class 10th",
+      institution: "Secondary Education",
+      year: "2021",
+      details: "Scored 94%",
       icon: <GraduationCap size={18} />
     },
     {
@@ -88,12 +102,12 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
       icon: <GraduationCap size={18} />
     },
     {
-      degree: "Class 10th",
-      institution: "Secondary Education",
-      year: "2021",
-      details: "Scored 94%",
+      degree: "B.Tech Computer Science",
+      institution: "Current University",
+      year: "2023 - Present",
+      details: "6th Semester | 8.74 SGPA (5th Sem)",
       icon: <GraduationCap size={18} />
-    }
+    },
   ];
 
   const journeyData = [
@@ -172,7 +186,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
       <div className="about-bg-blob about-bg-blob-2"></div>
       
       <div className="about-container">
-        {/* Left Column - Profile Card - Hidden on mobile */}
         <div className="about-image-col about-hide-mobile">
           <div className="image-sticky-wrapper">
             <div className="about-profile-card">
@@ -190,7 +203,7 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
               
               <div className="about-profile-info-card">
                 <h3 className="about-profile-name">Yatharth Dubey</h3>
-                <p className="about-profile-title">Full-Stack Developer</p>
+                <p className="about-profile-title">Aspiring Software Engineer & Problem Solver</p>
                 
                 <div className="about-profile-details">
                   <div className="about-profile-detail-item">
@@ -226,8 +239,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
               </div>
             ))}
           </div>
-
-          {/* Bio Section */}
           <div className="about-bio-section">
             <h2 className="about-section-title">
               <span className="about-title-gradient">About Me</span>
@@ -245,7 +256,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
             </p>
           </div>
 
-          {/* Key Highlights Section */}
           <div className="about-highlights-section">
             <h3 className="about-section-subtitle">
               <Award size={20} />
@@ -268,8 +278,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
               ))}
             </div>
           </div>
-
-          {/* Skills Section */}
           <div className="about-skills-section">
             <h3 className="about-section-subtitle">
               <Code size={20} />
@@ -282,10 +290,29 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
             </div>
           </div>
 
-          {/* Dual Timeline Section */}
+          <div className="about-experience-section">
+            <h3 className="about-section-subtitle">
+              <Briefcase size={20} />
+              Experience
+            </h3>
+            <div className="about-experience-cards">
+              {experienceData.map((exp, idx) => (
+                <div key={idx} className="about-experience-card">
+                  <h4 className="about-experience-role">{exp.role}</h4>
+                  <p className="about-experience-company">{exp.company}</p>
+                  <span className="about-experience-duration">{exp.duration}</span>
+                  <ul className="about-experience-list">
+                    {exp.points.map((point, i) => (
+                      <li key={i}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="about-dual-timeline-section">
             <div className="about-timeline-columns">
-              {/* Education Column */}
               <div className="about-timeline-column">
                 <h3 className="about-timeline-column-title">
                   <GraduationCap size={18} />
@@ -306,7 +333,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
                 </div>
               </div>
 
-              {/* Journey Column */}
               <div className="about-timeline-column">
                 <h3 className="about-timeline-column-title">
                   <Briefcase size={18} />
@@ -328,7 +354,6 @@ const About: React.FC<AboutProps> = ({ imageUrl }) => {
             </div>
           </div>
 
-          {/* CTA Buttons - Contact button hidden on mobile */}
           <div className="about-action-buttons">
             <button className="about-btn about-btn-primary" onClick={handleDownloadResume}>
               <svg className="about-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
