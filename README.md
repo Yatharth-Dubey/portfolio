@@ -1,73 +1,120 @@
-# React + TypeScript + Vite
+# 👨‍💻 Yatharth Dubey — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Aspiring Software Engineer | Full-Stack Developer | Problem Solver  
 
-Currently, two official plugins are available:
+A modern, responsive portfolio showcasing my projects, skills, and journey in software development.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🌐 Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+👉 https://yatharthdubey.vercel.app/
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧠 About Me
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+I’m a passionate Computer Science student with a strong drive for building impactful web applications.  
+My journey started with curiosity and has grown into a commitment to solving real-world problems through technology.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+I actively build full-stack applications, participate in hackathons, and continuously improve my problem-solving skills through competitive programming.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📊 Highlights
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 🏆 Ranked **6449 in TCS CodeVita Season 12 (Round 1)**
+- 🤖 State-level Bronze Medalist in **International Robotics Competition (Avishkaar)**
+- 🥇 1st Place in *Resume Making King* (College Event)
+- 💡 Participated in **IBM Hackathon 2025**
+- ✅ Completed **HENNGE Backend Challenge** (API + Authentication + Recursion)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+## 🛠️ Tech Stack
+
+### 💻 Languages & Core
+- JavaScript
+- TypeScript
+- Python
+- C / C++
+
+### 🌐 Web Development
+- React
+- Node.js
+- Express.js
+- HTML, CSS
+
+### 🗄️ Database
+- MongoDB
+- MySQL
+
+### 🔐 Authentication & APIs
+- JWT Authentication
+- Google OAuth
+- REST APIs
+
+### ⚙️ Tools & Platforms
+- Git & GitHub
+- Docker
+- Postman
+- Vercel
+- Linux & Windows
+
+---
+
+## 💼 Experience
+
+### 🏢 Full-Stack Intern — Pulse by OptiMaxin
+
+- Contributed to real-world product development
+- Worked across frontend and backend features
+- Collaborated with team members effectively
+- Recognized for code quality and reliability
+
+---
+
+## 🎓 Education
+
+- 🎓 **B.Tech Computer Science Engineering** (2023 – Present)  
+  → Current SGPA: **8.74**
+
+- 📘 Class 12th — 77% (2023)  
+- 📗 Class 10th — 94% (2021)
+
+---
+
+## 📈 Stats
+
+- 🚀 9+ Projects Built  
+- 🧠 Active in Competitive Programming  
+- ⚡ 3+ Hackathon Participations  
+
+---
+
+## 🛤️ My Journey
+
+- ✨ **2023** — Started coding & web development  
+- 🏆 **2024–25** — Hackathons & competitions  
+- 💻 **2025–26** — Built full-stack applications  
+- 📈 **Now** — Focused on advanced development & problem solving  
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="./src/assets/preview.png" width="45%" />
+  <img src="./src/assets/preview2.png" width="45%" />
+  <img src="./src/assets/preview3.png" width="45%" />
+</p>
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/Yatharth-Dubey/portfolio
+cd portfolio
+npm install
+npm start

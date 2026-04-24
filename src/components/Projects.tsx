@@ -105,14 +105,14 @@ const Projects: React.FC = () => {
       description: "Full-stack web application to manage student data including Fees, Results, etc with authentication and secure access. In use by RBS Kids Paradise School.",
       image: [rbs1, rbs2, rbs3, rbs4, rbs5],
       techStack: ["React", "JavaScript", "MySQL", "Express", "JWT", "Bcrypt"],
-      githubUrl: "#",
+      githubUrl: "https://github.com/Yatharth-Dubey/RbsKidsManagement",
       liveUrl: "https://rbs.eduguruji.com/",
       category: "Full Stack",
       featured: true
     },
     {
       id: 2,
-      title: "SIR Evaluation System",
+      title: "ElectRevise — SIR Voter Record Management System ",
       description: "Admin dashboard to manage student feedback and evaluation with secure login system.",
       image: [sir1, sir2, sir3, sir4, sir5, sir6],
       techStack: ["React", "JavaScript", "MySQL", "Express", "JWT"],
