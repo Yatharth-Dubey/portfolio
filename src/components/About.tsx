@@ -16,7 +16,7 @@ const LAYERS = [
 
 const LEDGER = [
   { fig: "9+", text: "projects built, from an AI document assistant to a school's daily management system" },
-  { fig: "8.76", text: "SGPA out of 10 in B.Tech Computer Science, currently in the 6th semester" },
+  { fig: "8.76", text: "SGPA out of 10 in B.Tech Computer Science, currently in the 7th semester" },
   { fig: "6449", text: "rank in TCS CodeVita Season 12, Round 1, a global coding contest" },
   { fig: "3+", text: "hackathons, including IBM Hackathon 2025 where I delivered an AI-assisted solution" },
   { fig: "Bronze", text: "state level, and national participant, in the Avishkaar International Robotics Competition" },
@@ -48,7 +48,7 @@ const LOG: { when: string; title: string; where: string; kind: Kind; points: str
 ];
 
 const NOW = [
-  ["Studying", "B.Tech CSE, 6th semester"],
+  ["Studying", "B.Tech CSE, 7th semester"],
   ["Building", "SchemeSetu and UniCircle"],
   ["Open to", "Internships and full-time roles"],
   ["Based in", "India"],
