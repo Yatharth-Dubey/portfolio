@@ -184,7 +184,7 @@ const Projects: React.FC = () => {
                 </div>
                 <div className="px-links">
                   {current.live && (
-                    <a className="px-btn px-btn--solid" href={current.live} {...ext}>
+                    <a className="px-btn" href={current.live} {...ext}>
                       <ExternalLink size={16} /> Live project
                     </a>
                   )}
