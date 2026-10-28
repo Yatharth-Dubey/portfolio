@@ -1,278 +1,114 @@
-import { Check, Mail, User, MessageSquare, Plane } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
-import "./styles/Contact.css";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { playClickSound } from "../utils/sound";
-gsap.registerPlugin(ScrollTrigger);
+import "./styles/Contact.css";
 
+type Fields = { name: string; email: string; message: string };
+type Status = "idle" | "sending" | "ok" | "invalid" | "error";
 
-type FormData = {
-    name: string;
-    email: string;
-    message: string;
-};
-
-type TouchedFields = {
-    name: boolean;
-    email: boolean;
-    message: boolean;
-};
+const EMAIL = "yatharthdubey12dec2004@gmail.com";
+const MAX = 500;
 
 export default function Contact() {
+    const sectionRef = useRef(null);
 
-const sectionRef = useRef(null);
-    useEffect(() => {
-        const el = sectionRef.current;
-        gsap.fromTo(el,
-            {
-                opacity: 0,
-                y: 100,
-            },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
-                },
-            }
-        );
-    }, []);
-    const formRef = useRef<HTMLFormElement>(null);
-    const [form, setForm] = useState<FormData>({
-        name: "",
-        email: "",
-        message: "",
-    });
-    const [touched, setTouched] = useState<TouchedFields>({
-        name: false,
-        email: false,
-        message: false,
-    });
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [form, setForm] = useState<Fields>({ name: "", email: "", message: "" });
+    const [status, setStatus] = useState<Status>("idle");
 
-    const validateName = (name: string) => name.trim().length >= 2;
-    const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const validateMessage = (message: string) => message.trim().length >= 10;
+    const errors: Partial<Record<keyof Fields, string>> = {};
+    if (form.name.trim().length < 2) errors.name = "at least 2 characters";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = "not a valid email address";
+    if (form.message.trim().length < 10) errors.message = "at least 10 characters";
+    const valid = Object.keys(errors).length === 0;
 
-    const isNameValid = validateName(form.name);
-    const isEmailValid = validateEmail(form.email);
-    const isMessageValid = validateMessage(form.message);
-    const isFormValid = isNameValid && isEmailValid && isMessageValid;
-
-    const getEmailError = () => {
-        if (!touched.email) return "";
-        if (!form.email) return "Email is required";
-        if (!isEmailValid) return "Invalid email format";
-        return "";
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const change = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+        if (status === "ok" || status === "error") setStatus("idle");
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setTouched({ ...touched, [e.target.name]: true });
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setTouched({ name: true, email: true, message: true });
-        if (!isFormValid) return;
+        if (!valid) { setStatus("invalid"); return; }
         playClickSound();
-        setLoading(true);
+        setStatus("sending");
         try {
             await emailjs.send(
                 "service_portYath1",
                 "template_dkr8dih",
-                {
-                    name: form.name,
-                    email: form.email,
-                    message: form.message,
-                },
+                { name: form.name, email: form.email, message: form.message },
                 "enIYXSbnbZORq8vDx",
             );
             setForm({ name: "", email: "", message: "" });
-            setTouched({ name: false, email: false, message: false });
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 5000);
+            setStatus("ok");
         } catch (error) {
             console.error(error);
-        } finally {
-            setLoading(false);
+            setStatus("error");
         }
     };
 
-    const characterCount = form.message.length;
-    const isMessageNearLimit = characterCount > 450;
-    const isMessageAtLimit = characterCount >= 500;
+    const code = { idle: "", sending: "pending", ok: "201 Created", invalid: "422 Unprocessable", error: "500 Server Error" }[status];
 
     return (
         <section ref={sectionRef} id="yath-contact" className="yath-contact page-section">
             <div className="yath-contact-bg-blob yath-contact-bg-blob-1" />
             <div className="yath-contact-bg-blob yath-contact-bg-blob-2" />
-            
-            <div className="yath-contact-container">
-                <div className="yath-contact-form-card yath-glass-card">
-                    {success ? (
-                        <div className="yath-success-box">
-                            <div className="yath-success-icon">
-                                <Check size={40} strokeWidth={1.5} />
-                            </div>
-                            <h3>Message Sent!</h3>
-                            <p>Thanks for reaching out. I'll get back to you within 24 hours 🚀</p>
-                            <button 
-                                className="yath-success-btn"
-                                onClick={() => setSuccess(false)}
-                            >
-                                Send Another Message
-                            </button>
+
+            <div className="ct-wrap">
+                <header className="ct-head">
+                    <h2 data-fx="decode">Got something to build or a role to fill?</h2>
+                    <p>Send me a request. I'm open to internships and full-time opportunities, and I reply within 24 hours.</p>
+                </header>
+
+                <div className="ct-grid" data-fx="stagger">
+                    <form className="ct-panel ct-request" onSubmit={submit} noValidate>
+                        <div className="ct-bar">
+                            <span className="ct-method">POST</span>
+                            <span className="ct-path">/contact</span>
                         </div>
-                    ) : (
-                        <form ref={formRef} onSubmit={handleSubmit} className="yath-contact-form" noValidate>
-                            <div className="yath-form-header">
-                                <Mail size={30}/>
-                                <h2>Send a Mail</h2>
-                                <p>Fill out the form below and I'll respond promptly.</p>
+
+                        <div className="ct-code">
+                            <p className="ct-line">{"{"}</p>
+                            <div className="ct-field">
+                                <label htmlFor="ct-name" className="ct-key">"name":</label>
+                                <input id="ct-name" name="name" value={form.name} onChange={change} placeholder='"Your name"' autoComplete="name" aria-invalid={status === "invalid" && !!errors.name} />
                             </div>
-
-                            <div className="yath-input-group">
-                                <div className="yath-input-icon">
-                                    <User size={18} />
-                                </div>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="yath-name"
-                                    placeholder=" "
-                                    value={form.name}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    className={touched.name && !isNameValid ? "yath-error" : ""}
-                                />
-                                <label htmlFor="yath-name">Full Name</label>
-                                {touched.name && !isNameValid && (
-                                    <span className="yath-error-message">Name must be at least 2 characters</span>
-                                )}
+                            <div className="ct-field">
+                                <label htmlFor="ct-email" className="ct-key">"email":</label>
+                                <input id="ct-email" name="email" type="email" value={form.email} onChange={change} placeholder='"you@example.com"' autoComplete="email" aria-invalid={status === "invalid" && !!errors.email} />
                             </div>
-
-                            <div className="yath-input-group">
-                                <div className="yath-input-icon">
-                                    <Mail size={18} />
-                                </div>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="yath-email"
-                                    placeholder=" "
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    className={touched.email && !isEmailValid ? "yath-error" : ""}
-                                />
-                                <label htmlFor="yath-email">Email Address</label>
-                                {touched.email && getEmailError() && (
-                                    <span className="yath-error-message">{getEmailError()}</span>
-                                )}
+                            <div className="ct-field ct-field--area">
+                                <label htmlFor="ct-message" className="ct-key">"message":</label>
+                                <textarea id="ct-message" name="message" rows={5} maxLength={MAX} value={form.message} onChange={change} placeholder='"Tell me what you have in mind"' aria-invalid={status === "invalid" && !!errors.message} />
                             </div>
-
-                            <div className="yath-input-group yath-textarea-group">
-                                <div className="yath-input-icon">
-                                    <MessageSquare size={18} />
-                                </div>
-                                <textarea
-                                    name="message"
-                                    id="yath-message"
-                                    placeholder=" "
-                                    rows={4}
-                                    value={form.message}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    maxLength={500}
-                                    className={touched.message && !isMessageValid ? "yath-error" : ""}
-                                />
-                                <label htmlFor="yath-message">Your Message</label>
-                                <div className="yath-char-counter">
-                                    <span className={isMessageAtLimit ? "yath-limit-error" : isMessageNearLimit ? "yath-limit-warning" : ""}>
-                                        {characterCount}/500
-                                    </span>
-                                    {touched.message && !isMessageValid && (
-                                        <span className="yath-error-message">Message must be at least 10 characters</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <button 
-                                type="submit" 
-                                className={`yath-submit-btn ${loading ? "yath-loading" : ""} ${!isFormValid && (touched.name || touched.email || touched.message) ? "yath-disabled" : ""}`}
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <>
-                                        <span className="yath-loader"></span>
-                                        <span>Sending...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        Send Message
-                                        <Mail size={16} className="yath-btn-icon" />
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    )}
-                </div>
-
-                <div className="yath-contact-info yath-glass-card">
-                    <div className="yath-availability-badge">
-                        <span className="yath-status-dot"></span>
-                        Open for Internships & Freelance
-                    </div>
-                    <h2>Let's Work Together</h2>
-                    <p>
-                        Actively learning and improving every day.<br/>
-                        Currently open to internships, freelance work, and collaboration opportunities.
-                        Let’s build something great together <Plane size={20}/>
-                    </p>
-                    
-                    <div className="yath-info-stats">
-                        <div className="yath-stat">
-                            <span className="yath-stat-number">8+</span>
-                            <span className="yath-stat-label">Projects Completed</span>
+                            <p className="ct-line">{"}"}<span className="ct-count">{form.message.length}/{MAX}</span></p>
                         </div>
-                    </div>
 
-                    <div className="yath-contact-links">
-                        <a 
-                            href="https://github.com/Yatharth-Dubey" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="yath-social-link yath-github"
-                            onClick={playClickSound}
-                        >
-                            <span>GitHub</span>
-                            <span className="yath-link-arrow">→</span>
-                        </a>
-                        <a 
-                            href="https://www.linkedin.com/in/yatharth-dubey-34a532316" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="yath-social-link yath-linkedin"
-                            onClick={playClickSound}
-                        >
-                            <span>LinkedIn</span>
-                            <span className="yath-link-arrow">→</span>
-                        </a>
-                    </div>
+                        <button type="submit" className="ct-send" disabled={status === "sending"}>
+                            {status === "sending" ? "Sending…" : "Send request"}
+                        </button>
+                    </form>
 
-                    <div className="yath-contact-footer">
-                        <p>📌 Based in India · Available worldwide</p>
+                    <div className="ct-panel ct-response" aria-live="polite">
+                        <div className="ct-bar">
+                            <span className="ct-label">Response</span>
+                            {code && <span className={`ct-code-pill ct-${status}`}>{code}</span>}
+                        </div>
+
+                        <pre className="ct-body">
+                            {status === "idle" && "// your response appears here"}
+                            {status === "sending" && "// waiting for the server…"}
+                            {status === "ok" && `{\n  "status": "sent",\n  "reply_in": "within 24 hours"\n}`}
+                            {status === "invalid" && `{\n  "errors": {\n${Object.entries(errors).map(([k, v]) => `    "${k}": "${v}"`).join(",\n")}\n  }\n}`}
+                            {status === "error" && `{\n  "error": "could not send",\n  "try": "email me directly"\n}`}
+                        </pre>
+
+                        <dl className="ct-headers">
+                            <div><dt>X-Availability</dt><dd>Open to Internships &amp; Full-Time Opportunities</dd></div>
+                            <div><dt>X-Email</dt><dd><a href={`mailto:${EMAIL}`} onClick={playClickSound}>{EMAIL}</a></dd></div>
+                            <div><dt>X-LinkedIn</dt><dd><a href="https://www.linkedin.com/in/yatharth-dubey-34a532316" target="_blank" rel="noopener noreferrer" onClick={playClickSound}>yatharth-dubey</a></dd></div>
+                            <div><dt>X-GitHub</dt><dd><a href="https://github.com/Yatharth-Dubey" target="_blank" rel="noopener noreferrer" onClick={playClickSound}>Yatharth-Dubey</a></dd></div>
+                            <div><dt>X-Location</dt><dd>India</dd></div>
+                        </dl>
                     </div>
                 </div>
             </div>

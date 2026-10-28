@@ -1,171 +1,128 @@
-import { ChevronRight, Mail, ArrowDown, Code, Sparkles } from "lucide-react";
-import "./styles/Hero.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import type { LucideIcon } from "lucide-react";
+import { ArrowDown, ChevronRight, Database, LayoutDashboard, Mail, PenTool, Server } from "lucide-react";
 import { playClickSound } from "../utils/sound";
-import gsap from "gsap";
 import githubIcon from "../assets/github.png";
 import linkedinIcon from "../assets/linkedin.png";
+import "./styles/Hero.css";
 
-type HeroProps = {
-  name: string;
-  role: string;
-  imageUrl?: string;
-};
+type HeroProps = { name: string; role: string; imageUrl?: string };
+
+type Stage = { label: string; tool: string; line: string; proof: string; icon: LucideIcon };
+
+// The idea: I work across the whole path of a product. Edit freely.
+const STAGES: Stage[] = [
+  {
+    label: "Wireframe", tool: "Figma, Notion", icon: PenTool,
+    line: "I start with the user flow: wireframes, information architecture and a written case study.",
+    proof: "SchemeSetu: upload, chat, citations, history",
+  },
+  {
+    label: "Interface", tool: "React, TypeScript", icon: LayoutDashboard,
+    line: "Then I build responsive screens people can actually use, with thought for every state.",
+    proof: "UniCircle, RBS Kids, TypeAce",
+  },
+  {
+    label: "API", tool: "Node, Express, FastAPI", icon: Server,
+    line: "Behind them sit authenticated services: JWT, role-based access, and the logic of each workflow.",
+    proof: "EnglishOne: dashboards, approvals, live classes",
+  },
+  {
+    label: "Data", tool: "MySQL, MongoDB, PostgreSQL", icon: Database,
+    line: "And a database that holds up, from student records to a RAG index over scheme documents.",
+    proof: "ElectRevise: 100K+ voter records",
+  },
+];
 
 export default function Hero({ name, role, imageUrl }: HeroProps) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [first, ...rest] = name.split(" ");
 
   useEffect(() => {
-    gsap.to(".hero-bg-blob-1", {
-      y: 100,
-      scrollTrigger: {
-        trigger: ".hero",
-        scrub: true,
-      },
-    });
-    gsap.to(".hero-bg-blob-2", {
-      y: -100,
-      scrollTrigger: {
-        trigger: ".hero",
-        scrub: true,
-      },
-    });
-  }, []);
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => setActive((a) => (a + 1) % STAGES.length), 3600);
+    return () => clearInterval(t);
+  }, [paused]);
 
-  const scrollToContact = () => {
+  const go = (id: string) => {
     playClickSound();
-    const contactSection = document.getElementById("yath-contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
-  const scrollToProjects = () => {
-    playClickSound();
-    const projectsSection = document.getElementById("projects");
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ behavior: "smooth" });
-    }
+
+  const onMove = (e: React.MouseEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
   };
 
   return (
-    <section id="hero" className="hero">
-      <div className="hero-bg-blob hero-bg-blob-1"></div>
-      <div className="hero-bg-blob hero-bg-blob-2"></div>
-      
+    <section id="hero" className="hero" onMouseMove={onMove}>
+      <div className="hero-bg-blob hero-bg-blob-1" />
+      <div className="hero-bg-blob hero-bg-blob-2" />
+
       <div className="hero-container">
         <div className="hero-content">
-          <div className="hero-badge">
-            <Sparkles size={16} />
-            <span>Welcome to my portfolio</span>
+          <div className="hero-pill">
+            {imageUrl && <img src={imageUrl} alt={name} className="hero-avatar" />}
+            <span className="hero-pill-text">
+              <span className="hero-pill-dot" /> Open to Internships &amp; Full-Time Opportunities
+            </span>
           </div>
+
           <h1 className="hero-title">
-            Hi, I'm{" "}
-            <span className="gradient-text">{name}</span>
+            <span>{first}</span>
+            <span className="hero-title-line">{rest.join(" ")}</span>
           </h1>
           <p className="hero-role">{role}</p>
           <p className="hero-description">
-            I’m a B.Tech student passionate about building real-world web applications 
-            using modern technologies. I enjoy turning ideas into functional products 
-            with clean UI and smooth user experience. Currently exploring full-stack 
-            development and continuously improving my skills.
+            I build full-stack software and think about how people move through it, from the first wireframe to the last database query.
           </p>
+
           <div className="hero-buttons">
-            <button className="btn-primary" onClick={scrollToProjects}>
-              View My Work
-              <ChevronRight size={18} />
+            <button className="btn-primary" onClick={() => go("projects")}>
+              See what I've built <ChevronRight size={18} />
             </button>
-            <button className="btn-secondary" onClick={scrollToContact}>
-              Let's Connect
-              <Mail size={18} />
+            <button className="btn-secondary" onClick={() => go("yath-contact")}>
+              Get in touch <Mail size={18} />
             </button>
           </div>
+
           <div className="hero-social">
-            <a 
-              href="https://github.com/Yatharth-Dubey" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="social-link"
-              aria-label="GitHub"
-              onClick={playClickSound}
-            >
-              <img src={githubIcon} alt="github" className="heroicon" />
+            <a href="https://github.com/Yatharth-Dubey" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="GitHub" onClick={playClickSound}>
+              <img src={githubIcon} alt="" className="heroicon" />
             </a>
-            <a 
-              href="https://www.linkedin.com/in/yatharth-dubey-34a532316" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="social-link"
-              aria-label="LinkedIn"
-              onClick={playClickSound}
-            >
-              <img src={linkedinIcon} alt="linkedin" className="heroicon"/>
+            <a href="https://www.linkedin.com/in/yatharth-dubey-34a532316" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="LinkedIn" onClick={playClickSound}>
+              <img src={linkedinIcon} alt="" className="heroicon" />
             </a>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="hero-photo-container">
-            <div className="hero-photo-glow"></div>
-            {imageUrl ? (
-              <img 
-                src={imageUrl} 
-                alt={name} 
-                className="hero-photo"
-              />
-            ) : (
-              <div className="hero-photo-placeholder">
-                <Code size={48} />
-                <span>Your Photo Here</span>
-              </div>
-            )}
-          </div>
-          <div className="hero-code-card">
-            <div className="code-header">
-              <div className="code-dots">
-                <span className="code-dot red"></span>
-                <span className="code-dot yellow"></span>
-                <span className="code-dot green"></span>
-              </div>
-              <span className="code-title">developer.ts</span>
-            </div>
-            <div className="code-content">
-              <p className="code-line">
-                <span className="code-keyword">const</span>{" "}
-                <span className="code-variable">developer</span>{" "}
-                <span className="code-operator">=</span> {"{"}
-              </p>
-              <p className="code-line code-indent-1">
-                <span className="code-property">name</span>:{" "}
-                <span className="code-string">"{name}"</span>,
-              </p>
-              <p className="code-line code-indent-1">
-                <span className="code-property">role</span>:{" "}
-                <span className="code-string">"{role}"</span>,
-              </p>
-              <p className="code-line code-indent-1">
-                <span className="code-property">passion</span>:{" "}
-                <span className="code-string">"Building UI"</span>,
-              </p>
-              <p className="code-line code-indent-1">
-                <span className="code-property">projects</span>:{" "}
-                <span className="code-number">8+</span>,
-              </p>
-              <p className="code-line code-indent-1">
-                <span className="code-property">available</span>:{" "}
-                <span className="code-boolean">true</span>,
-              </p>
-              <p className="code-line">
-                {"}"}
-                <span className="code-semicolon">;</span>
-              </p>
-            </div>
-          </div>
+
+        <div className="hero-flow" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+          <p className="hf-title">From idea to database</p>
+          <ol className="hf">
+            {STAGES.map((s, i) => (
+              <li key={s.label} className={`hf-row ${i === active ? "is-active" : ""} ${i < active ? "is-done" : ""}`}>
+                <span className="hf-node"><s.icon size={18} /></span>
+                <button className="hf-btn" aria-expanded={i === active} onClick={() => { playClickSound(); setActive(i); }}>
+                  <span className="hf-label">{s.label}</span>
+                  <span className="hf-tool">{s.tool}</span>
+                </button>
+                <div className="hf-detail">
+                  <div>
+                    <p>{s.line}</p>
+                    <span className="hf-proof">{s.proof}</span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
-      <div className="hero-scroll-indicator">
-        <div className="scroll-mouse">
-          <div className="scroll-wheel"></div>
-        </div>
-        <ArrowDown size={16} className="scroll-arrow" />
-      </div>
+
+      <button className="hero-scroll-indicator" onClick={() => go("about")} aria-label="Scroll to About">
+        <ArrowDown size={18} />
+      </button>
     </section>
   );
 }

@@ -1,372 +1,170 @@
-import { useEffect, useRef, useState } from 'react';
-import './styles/About.css';
-import { Code, Award, Briefcase, GraduationCap, Sparkles, Zap, TrendingUp, User, Mail, MapPin, Calendar } from 'lucide-react';
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { playClickSound } from '../utils/sound';
-gsap.registerPlugin(ScrollTrigger);
+import { useRef, useState } from "react";
+import { Download, Mail, MapPin, RotateCw } from "lucide-react";
+import { playClickSound } from "../utils/sound";
+import "./styles/About.css";
 
-type AboutProps = {
-  imageUrl?: string;
-};
+type AboutProps = { imageUrl?: string };
 
-interface StatItem {
-  value: string;
-  label: string;
-  icon: React.ReactNode;
-}
+/* ── Edit your content here ───────────────────────────── */
+const LAYERS = [
+  { name: "Product", note: "SchemeSetu case study and wireframes", items: ["Figma (basic)", "Notion", "Wireframing", "User flows", "Information architecture", "Interaction design basics"] },
+  { name: "Interface", note: "UniCircle, RBS Kids, TypeAce", items: ["React.js", "TypeScript", "HTML5", "CSS3", "Responsive UI"] },
+  { name: "Services", note: "EnglishOne, RBS Kids, ElectRevise", items: ["Node.js", "Express.js", "FastAPI", "RESTful APIs", "JWT", "bcrypt", "Google OAuth", "WebRTC"] },
+  { name: "Data and AI", note: "ElectRevise records, SchemeSetu retrieval", items: ["MySQL", "MongoDB", "PostgreSQL", "RAG", "FAISS", "Sentence Transformers"] },
+  { name: "Tooling", note: "Every project, from commit to deploy", items: ["Git", "GitHub", "Postman", "VS Code", "Vercel", "AWS", "JIRA", "Linux", "EmailJS", "Python", "C/C++"] },
+];
 
-interface HighlightItem {
-  text: string;
-  category?: string;
-}
+const LEDGER = [
+  { fig: "9+", text: "projects built, from an AI document assistant to a school's daily management system" },
+  { fig: "8.76", text: "SGPA out of 10 in B.Tech Computer Science, currently in the 6th semester" },
+  { fig: "6449", text: "rank in TCS CodeVita Season 12, Round 1, a global coding contest" },
+  { fig: "3+", text: "hackathons, including IBM Hackathon 2025 where I delivered an AI-assisted solution" },
+  { fig: "Bronze", text: "state level, and national participant, in the Avishkaar International Robotics Competition" },
+  { fig: "1st", text: "place in \"Resume Making King\" at Aarohan, a college event" },
+  { fig: "Cleared", text: "the HENNGE backend challenge: recursion, authenticated APIs and a secure gist submission" },
+];
+
+type Kind = "work" | "build" | "learn";
+const LOG: { when: string; title: string; where: string; kind: Kind; points: string[] }[] = [
+  { when: "Jul to Aug 2026", title: "Full-Stack Development Intern", where: "InfoSeeds, EnglishOne", kind: "work", points: [
+    "Worked as part of a team on a role-based learning platform for students, teachers and super admins, using React.js, Node.js, Express.js and MySQL",
+    "Built features across authentication, dashboards, course and lesson management, teacher approval, calendar management and live-class workflows",
+    "Helped with UI improvements, API troubleshooting, JIRA-based bug tracking and AWS production deployment" ] },
+  { when: "2026", title: "Letter of Recommendation", where: "Pulse by OptiMaxin", kind: "work", points: [
+    "Assisted in full-stack feature development within a professional product environment",
+    "Contributed to assigned tasks from development to deployment" ] },
+  { when: "2026", title: "Started SchemeSetu", where: "AI government schemes assistant", kind: "build", points: [
+    "Wireframes and a product case study first, then the RAG application with FastAPI and FAISS, which is still in progress" ] },
+  { when: "2025", title: "ElectRevise", where: "Voter survey and booth management", kind: "build", points: [
+    "Built with one teammate",
+    "Excel upload, merging, assignment and reporting for 100K+ voter records, with role-based access control" ] },
+  { when: "2024 to 2025", title: "Hackathons and contests", where: "IBM Hackathon, CodeVita, Avishkaar", kind: "build", points: [
+    "IBM Hackathon 2025: delivered an AI-assisted solution under time constraints" ] },
+  { when: "2023 to 2027", title: "B.Tech in Computer Science Engineering", where: "Raja Balwant Singh Engineering Technical Campus, Agra", kind: "learn", points: [
+    "Dr. A.P.J. Abdul Kalam Technical University (AKTU), Lucknow",
+    "SGPA 8.76/10, 6th semester",
+    "Coursework: Data Structures and Algorithms, Operating Systems, DBMS, Computer Networks, OOPs, Software Engineering" ] },
+  { when: "2023", title: "Started coding", where: "", kind: "build", points: ["Web development and programming fundamentals"] },
+];
+
+const NOW = [
+  ["Studying", "B.Tech CSE, 6th semester"],
+  ["Building", "SchemeSetu and UniCircle"],
+  ["Open to", "Internships and full-time roles"],
+  ["Based in", "India"],
+];
 
 const About: React.FC<AboutProps> = ({ imageUrl }) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  
-  useEffect(() => {
-    const el = sectionRef.current;
-    gsap.fromTo(
-      el,
-      {
-        opacity: 0,
-        y: 100,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
-  }, []);
-  
-  const skillTags: string[] = [
-    "React", "JavaScript", "Python", "C/C++", "TypeScript", 
-    "Node.js", "Express.js", 
-    "MongoDB", "MySQL", "Google OAuth", "WebRTC",
-    "JWT Auth", "REST APIs",
-    "HTML", "CSS", "EmailJs",
-    "Git & GitHub(active open-source usage)", "PostMan", "Docker", "Vercel", "Linux", "Windows"
-  ];
+  const [flipped, setFlipped] = useState(false);
 
-  const experienceData = [
-    {
-      role: "Full-Stack Intern",
-      company: "Pulse by OptiMaxin",
-      duration: "Internship",
-      points: [
-        "Assisted in full-stack feature development within a professional product environment",
-        "Contributed to assigned tasks from development to deployment",
-        "Collaborated with team members and communicated progress effectively",
-        "Recognized for reliability, quick learning, and code quality"
-      ]
-    }
-  ];
 
-  const statsData: StatItem[] = [
-    { value: "9+", label: "Worked On Projects", icon: <Code size={20} /> },
-    { value: "6449", label: "CodeVita Rank Season 12", icon: <TrendingUp size={20} /> },
-    { value: "8.74", label: "Current SGPA", icon: <Award size={20} /> },
-    { value: "3+", label: "Hackathon Paticipations", icon: <Zap size={20} /> }
-  ];
-
-  const highlightData: HighlightItem[] = [
-    { text: "Ranked 6449 in TCS CodeVita Season 12 (Round 1), a global competitive programming contest", category: "competition" },
-    { text: "State-level Bronze Medallist and National-level participant in International Robotics Competition (Avishkaar)", category: "achievement" },
-    { text: "Secured 1st place in \"Resume Making King\" at Aarohan (college-level event)", category: "achievement" },
-    { text: "Participated in IBM Hackathon 2025, building an AI-assisted solution under strict time constraints", category: "hackathon" },
-    { text: "Successfully completed the HENNGE backend challenge involving recursion-based problem solving, secure GitHub gist submission, and API-based validation with authentication", category: "certification" }
-  ];
-
-  const educationData = [
-    {
-      degree: "Class 10th",
-      institution: "Secondary Education",
-      year: "2021",
-      details: "Scored 94%",
-      icon: <GraduationCap size={18} />
-    },
-    {
-      degree: "Class 12th",
-      institution: "Senior Secondary Education",
-      year: "2023",
-      details: "Scored 77%",
-      icon: <GraduationCap size={18} />
-    },
-    {
-      degree: "B.Tech Computer Science",
-      institution: "Current University",
-      year: "2023 - Present",
-      details: "6th Semester | 8.74 SGPA (5th Sem)",
-      icon: <GraduationCap size={18} />
-    },
-  ];
-
-  const journeyData = [
-    {
-      title: "Started Coding Journey",
-      year: "2023",
-      description: "Began exploring web development and programming fundamentals",
-      icon: <Sparkles size={18} />
-    },
-    {
-      title: "Hackathon Participation",
-      year: "2024-2025",
-      description: "Participated in IBM Hackathon and multiple college-level competitions",
-      icon: <Award size={18} />
-    },
-    {
-      title: "First Project",
-      year: "2025-2026",
-      description: "Built first full-stack application using MERN stack",
-      icon: <Code size={18} />
-    },
-    {
-      title: "Current Focus",
-      year: "2025",
-      description: "Advanced full-stack development & competitive programming",
-      icon: <TrendingUp size={18} />
-    }
-  ];
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
-
-  const handleDownloadResume = () => {
-    playClickSound();
-    const link = document.createElement('a');
-    link.href = '/resume.pdf';
-    link.download = 'Resume_YatharthDubey.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const tilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    e.currentTarget.style.setProperty("--ry", `${x * 14}deg`);
+    e.currentTarget.style.setProperty("--rx", `${-y * 14}deg`);
   };
-
-  const handleContactClick = () => {
-    playClickSound();
-    const contactSection = document.getElementById('yath-contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const untilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty("--ry", "0deg");
+    e.currentTarget.style.setProperty("--rx", "0deg");
   };
+  const flip = () => { playClickSound(); setFlipped((f) => !f); };
 
-  const getCategoryColor = (category?: string) => {
-    switch(category) {
-      case 'competition': return 'var(--gradient-start)';
-      case 'hackathon': return 'var(--gradient-end)';
-      case 'certification': return '#10b981';
-      default: return 'var(--gradient-start)';
-    }
+  const download = () => {
+    playClickSound();
+    const a = document.createElement("a");
+    a.href = "/resume.pdf";
+    a.download = "Resume_YatharthDubey.pdf";
+    a.click();
   };
 
   return (
     <section ref={sectionRef} id="about" className="about-section page-section">
-      <div className="about-bg-blob about-bg-blob-1"></div>
-      <div className="about-bg-blob about-bg-blob-2"></div>
-      
+      <div className="about-bg-blob about-bg-blob-1" />
+      <div className="about-bg-blob about-bg-blob-2" />
+
       <div className="about-container">
-        <div className="about-image-col about-hide-mobile">
-          <div className="image-sticky-wrapper">
-            <div className="about-profile-card">
-              <div className="about-image-wrapper">
-                <div className="about-image-border"></div>
-                {imageUrl ? (
-                  <img src={imageUrl} alt="Yatharth" className="about-profile-image-main" />
-                ) : (
-                  <div className="about-hero-photo-placeholder">
-                    <Code size={48} />
-                    <span>Your Photo Here</span>
-                  </div>
-                )}
+        <aside className="ab-side">
+          <div className="ab-card" onMouseMove={tilt} onMouseLeave={untilt}>
+            <div
+              className={`ab-card-inner ${flipped ? "is-flipped" : ""}`}
+              role="button" tabIndex={0} aria-pressed={flipped} aria-label="Flip card to see what I'm up to"
+              onClick={flip}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } }}
+            >
+              <div className="ab-face ab-front">
+                {imageUrl && <img src={imageUrl} alt="Yatharth Dubey" />}
+                <span className="ab-hint"><RotateCw size={13} /> Flip</span>
               </div>
-              
-              <div className="about-profile-info-card">
-                <h3 className="about-profile-name">Yatharth Dubey</h3>
-                <p className="about-profile-title">Aspiring Software Engineer & Problem Solver</p>
-                
-                <div className="about-profile-details">
-                  <div className="about-profile-detail-item">
-                    <User size={14} />
-                    <span>B.Tech in Computer Science Engineering</span>
-                  </div>
-                  <div className="about-profile-detail-item">
-                    <MapPin size={14} />
-                    <span>India</span>
-                  </div>
-                  <div className="about-profile-detail-item">
-                    <Mail size={14} />
-                    <span>yatharthdubey12dec2004@gmail.com</span>
-                  </div>
-                  <div className="about-profile-detail-item">
-                    <Calendar size={14} />
-                    <span>Available for opportunities</span>
-                  </div>
-                </div>
+              <div className="ab-face ab-back">
+                <p className="ab-back-title">Right now</p>
+                <dl>
+                  {NOW.map(([k, v]) => (
+                    <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+                  ))}
+                </dl>
               </div>
             </div>
           </div>
-        </div>
-        <div className={`about-content-col ${isVisible ? 'fade-in' : ''}`} ref={contentRef}>
-          <div className="about-stats-grid">
-            {statsData.map((stat, idx) => (
-              <div key={idx} className="about-stat-card">
-                <div className="about-stat-icon">{stat.icon}</div>
-                <div className="about-stat-content">
-                  <h4 className="about-stat-value">{stat.value}</h4>
-                  <p className="about-stat-label">{stat.label}</p>
+
+          <h3 className="ab-name">Yatharth Dubey</h3>
+          <p className="ab-sub">Full-stack developer with a product mindset</p>
+          <p className="ab-meta"><MapPin size={14} /> India</p>
+          <a className="ab-meta ab-link" href="mailto:yatharthdubey12dec2004@gmail.com" onClick={playClickSound}>
+            <Mail size={14} /> yatharthdubey12dec2004@gmail.com
+          </a>
+          <button className="ab-download" onClick={download}>
+            <Download size={16} /> Download resume
+          </button>
+        </aside>
+
+        <div className="ab-main">
+          <h2 className="ab-heading" data-fx="decode">I build full-stack products and care how they feel to use.</h2>
+          <p className="ab-text">
+            I build full-stack software and think about how people move through it: user flows, wireframes and
+            documentation sit alongside the APIs and databases. I learn fastest on real problems, which is why I enter
+            hackathons and contests, and why one of my projects is a management system a school uses every day.
+          </p>
+
+          <h3 className="ab-sub-heading" data-fx="decode">How a product gets built, layer by layer</h3>
+          <div className="ab-layers" data-fx="stagger">
+            {LAYERS.map((l) => (
+              <div key={l.name} className="ab-layer" tabIndex={0}>
+                <span className="ab-layer-name">{l.name}</span>
+                <div className="ab-layer-body">
+                  <div className="ab-layer-items">
+                    {l.items.map((s) => <span key={s} className="ab-chip">{s}</span>)}
+                  </div>
+                  <span className="ab-layer-note">Used in: {l.note}</span>
                 </div>
               </div>
             ))}
           </div>
-          <div className="about-bio-section">
-            <h2 className="about-section-title">
-              <span className="about-title-gradient">About Me</span>
-            </h2>
-            <p className="about-bio-text">
-              I'm a passionate Computer Science student with a drive for creating impactful web applications. 
-              My journey in tech started with curiosity and has evolved into a commitment to building 
-              solutions that matter. I thrive on challenges, whether it's mastering new technologies, 
-              solving complex problems, or collaborating on innovative projects.
-            </p>
-            <p className="about-bio-text">
-              While pursuing my B.Tech in Computer Science, I've built multiple full-stack applications and actively 
-              participate in hackathons and coding competitions. I believe in continuous learning and 
-              pushing boundaries to create meaningful digital experiences.
-            </p>
-          </div>
 
-          <div className="about-highlights-section">
-            <h3 className="about-section-subtitle">
-              <Award size={20} />
-              Key Highlights
-            </h3>
-            <div className="about-highlights-grid">
-              {highlightData.map((highlight, idx) => (
-                <div key={idx} className="about-highlight-card">
-                  <div 
-                    className="about-highlight-dot" 
-                    style={{ background: getCategoryColor(highlight.category) }}
-                  ></div>
-                  <div className="about-highlight-content">
-                    <p className="about-highlight-text">{highlight.text}</p>
-                    {highlight.category && (
-                      <span className="about-highlight-category">{highlight.category}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="about-skills-section">
-            <h3 className="about-section-subtitle">
-              <Code size={20} />
-              Tech Stack & Tools
-            </h3>
-            <div className="about-skills-tags">
-              {skillTags.map((skill, idx) => (
-                <span key={idx} className="about-skill-tag">{skill}</span>
-              ))}
-            </div>
-          </div>
+          <h3 className="ab-sub-heading" data-fx="decode">Track record</h3>
+          <ul className="ab-ledger" data-fx="stagger">
+            {LEDGER.map((r) => (
+              <li key={r.fig + r.text}>
+                <span className="ab-fig" data-fx="count">{r.fig}</span>
+                <span className="ab-ledger-text">{r.text}</span>
+              </li>
+            ))}
+          </ul>
 
-          <div className="about-experience-section">
-            <h3 className="about-section-subtitle">
-              <Briefcase size={20} />
-              Experience
-            </h3>
-            <div className="about-experience-cards">
-              {experienceData.map((exp, idx) => (
-                <div key={idx} className="about-experience-card">
-                  <h4 className="about-experience-role">{exp.role}</h4>
-                  <p className="about-experience-company">{exp.company}</p>
-                  <span className="about-experience-duration">{exp.duration}</span>
-                  <ul className="about-experience-list">
-                    {exp.points.map((point, i) => (
-                      <li key={i}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="about-dual-timeline-section">
-            <div className="about-timeline-columns">
-              <div className="about-timeline-column">
-                <h3 className="about-timeline-column-title">
-                  <GraduationCap size={18} />
-                  Education
-                </h3>
-                <div className="about-vertical-timeline">
-                  {educationData.map((item, idx) => (
-                    <div key={idx} className="about-timeline-node">
-                      <div className="about-timeline-marker">{item.icon}</div>
-                      <div className="about-timeline-content-card">
-                        <div className="about-timeline-year">{item.year}</div>
-                        <h4 className="about-timeline-degree">{item.degree}</h4>
-                        <p className="about-timeline-institution">{item.institution}</p>
-                        <p className="about-timeline-details">{item.details}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="about-timeline-column">
-                <h3 className="about-timeline-column-title">
-                  <Briefcase size={18} />
-                  Journey
-                </h3>
-                <div className="about-vertical-timeline">
-                  {journeyData.map((item, idx) => (
-                    <div key={idx} className="about-timeline-node">
-                      <div className="about-timeline-marker">{item.icon}</div>
-                      <div className="about-timeline-content-card">
-                        <div className="about-timeline-year">{item.year}</div>
-                        <h4 className="about-timeline-degree">{item.title}</h4>
-                        <p className="about-timeline-details">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="about-action-buttons">
-            <button className="about-btn about-btn-primary" onClick={handleDownloadResume}>
-              <svg className="about-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 3v12m0 0-3-3m3 3 3-3M5 21h14" stroke="currentColor" strokeLinecap="round"/>
-              </svg>
-              Download Resume
-            </button>
-            <button className="about-btn about-btn-secondary about-hide-mobile" onClick={handleContactClick}>
-              <svg className="about-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-              Contact Me
-            </button>
+          <h3 className="ab-sub-heading" data-fx="decode">Experience, education and builds, newest first</h3>
+          <div className="ab-log" data-fx="stagger">
+            {LOG.map((e) => (
+              <details key={e.title} name="ab-log" className={`ab-entry ab-entry--${e.kind}`}>
+                <summary onClick={playClickSound}>
+                  <span className="ab-when">{e.when}</span>
+                  <span className="ab-entry-title">{e.title}</span>
+                  {e.where && <span className="ab-where">{e.where}</span>}
+                </summary>
+                <ul>{e.points.map((p) => <li key={p}>{p}</li>)}</ul>
+              </details>
+            ))}
           </div>
         </div>
       </div>

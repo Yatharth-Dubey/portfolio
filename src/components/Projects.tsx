@@ -1,362 +1,212 @@
-import { useState } from 'react';
-import './styles/Projects.css';
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { playClickSound } from '../utils/sound';
-import rbs1 from "../assets/rbs1.png";
-import rbs2 from "../assets/rbs2.png";
-import rbs3 from "../assets/rbs3.png";
-import rbs4 from "../assets/rbs4.png";
-import rbs5 from "../assets/rbs5.png";
-import sir1 from "../assets/sir1.png";
-import sir2 from "../assets/sir2.png";
-import sir3 from "../assets/sir3.png";
-import sir4 from "../assets/sir4.png";
-import sir5 from "../assets/sir5.png";
-import sir6 from "../assets/sir6.png";
-import typeace1 from "../assets/typeace1.png";
-import typeace2 from "../assets/typeace2.png";
-import typeace3 from "../assets/typeace3.png";
-import typeace4 from "../assets/typeace4.png";
-import unicircle0 from "../assets/unicircle0.png";
-import unicircle1 from "../assets/unicircle1.png";
-import unicircle2 from "../assets/unicircle2.png";
-import unicircle3 from "../assets/unicircle3.png";
-import unicircle4 from "../assets/unicircle4.png";
-import blogpick1 from "../assets/blogpick1.png";
-import blogpick2 from "../assets/blogpick2.png";
-import blogpick3 from "../assets/blogpick3.png";
-import weather from "../assets/weatherapp.png"
-import snakegame from "../assets/snakegame.png"
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { BookOpen, ExternalLink, Palette } from "lucide-react";
+import { playClickSound } from "../utils/sound";
+import { projects, type Status } from "../data/Project";
+import "./styles/Projects.css";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string[];
-  techStack: string[];
-  githubUrl: string;
-  liveUrl: string;
-  category: string;
-  featured?: boolean;
-}
+const STATUS_LABEL: Record<Status, string> = {
+  live: "Live",
+  building: "Building",
+  built: "Built",
+  private: "Private",
+};
+
+const GitHubIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+  </svg>
+);
 
 const Projects: React.FC = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const [filter, setFilter] = useState("All");
+  const [activeId, setActiveId] = useState(projects[0].id);
+  const [imgIdx, setImgIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  const [imageIndexes, setImageIndexes] = useState<{ [key: number]: number }>({});
+  const categories = useMemo(() => ["All", ...new Set(projects.map((p) => p.category))], []);
+  const visible = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+  const current = visible.find((p) => p.id === activeId) ?? visible[0];
+  const shot = current.images.length ? current.images[imgIdx % current.images.length] : undefined;
+
+
+  // lets the command palette open a project
   useEffect(() => {
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    const intervals: ReturnType<typeof setInterval>[] = [];
-    projects.forEach((project, index) => {
-      const baseDelay = index * 300;
-      const randomOffset = 2000 + Math.random() * 1200;
-      const startDelay = baseDelay + randomOffset;
-      const timeout = setTimeout(() => {
-        const intervalTime = 2000 + Math.random() * 2000;
-        const interval = setInterval(() => {
-          setImageIndexes((prev) => {
-            const newIndexes = { ...prev };
-            const currentIndex = newIndexes[project.id] || 0;
-            newIndexes[project.id] =
-              (currentIndex + 1) % project.image.length;
-            return newIndexes;
-          });
-        }, intervalTime);
-        intervals.push(interval);
-      }, startDelay);
-      timeouts.push(timeout);
-    });
-    return () => {
-      timeouts.forEach(clearTimeout);
-      intervals.forEach(clearInterval);
-    };
-  }, []);
-  
-  const sectionRef = useRef(null);
-  useEffect(() => {
-    const el = sectionRef.current;
-    gsap.fromTo(
-      el,
-      {
-        opacity: 0,
-        y: 100,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
+    const open = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (projects.some((p) => p.id === id)) {
+        setFilter("All");
+        setActiveId(id);
+        setImgIdx(0);
       }
-    );
+    };
+    window.addEventListener("open-project", open);
+    return () => window.removeEventListener("open-project", open);
   }, []);
-  const [activeFilter, setActiveFilter] = useState<string>('All');
 
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "RBS Kids Paradise School Student Management Website (Currently in Use)",
-      description: "Full-stack web application to manage student data including Fees, Results, etc with authentication and secure access. In use by RBS Kids Paradise School.",
-      image: [rbs1, rbs2, rbs3, rbs4, rbs5],
-      techStack: ["React", "JavaScript", "MySQL", "Express", "JWT", "Bcrypt"],
-      githubUrl: "https://github.com/Yatharth-Dubey/RbsKidsManagement",
-      liveUrl: "https://rbs.eduguruji.com/",
-      category: "Full Stack",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "ElectRevise — SIR Voter Record Management System ",
-      description: "Admin dashboard to manage student feedback and evaluation with secure login system.",
-      image: [sir1, sir2, sir3, sir4, sir5, sir6],
-      techStack: ["React", "JavaScript", "MySQL", "Express", "JWT"],
-      githubUrl: "#",
-      liveUrl: "#",
-      category: "Full Stack"
-    },
-    {
-      id: 3,
-      title: "UniCircle (In Progress)",
-      description: "A social platform for students to connect, share, and collaborate.",
-      image: [unicircle0, unicircle1, unicircle2, unicircle3, unicircle4],
-      techStack: ["React", "CSS", "MongoDB", "Express", "JWT", "Bcrypt"],
-      githubUrl: "#",
-      liveUrl: "https://unicircle.eduguruji.com/",
-      category: "Full Stack"
-    },
-    {
-      id: 4,
-      title: "TypeAce",
-      description: "Typing speed test application with performance tracking and clean UI.",
-      image: [typeace1, typeace2, typeace3, typeace4],
-      techStack: ["React", "CSS", "JavaScript", "MySQL", "Express"],
-      githubUrl: "#",
-      liveUrl: "https://examatom.com/",
-      category: "Full Stack"
-    },
-    // {
-    //   id: 5,
-    //   title: "Portfolio Website",
-    //   description: "Modern responsive portfolio built using React, Vite, and TypeScript.",
-    //   image: ["your-image"],
-    //   techStack: ["React", "TypeScript", "CSS"],
-    //   githubUrl: "#",
-    //   liveUrl: "#",
-    //   category: "Frontend"
-    // },
-    {
-      id: 6,
-      title: "BlogPick (In Progress)",
-      description: "Full-stack blogging platform with authentication and content management.",
-      image: [blogpick1, blogpick2, blogpick3],
-      techStack: ["React", "CSS", "MongoDB", "Express", "JWT"],
-      githubUrl: "https://github.com/Yatharth-Dubey/BlogPick",
-      liveUrl: "#",
-      category: "Full Stack"
-    },
-    {
-      id: 7,
-      title: "Weather App",
-      description: "Simple weather app using API integration.",
-      image: [weather],
-      techStack: ["HTML", "JavaScript", "API", "CSS"],
-      githubUrl: "https://github.com/Yatharth-Dubey/WeatherApp",
-      liveUrl: "#",
-      category: "JavaScript"
-    },
-    {
-      id: 8,
-      title: "Snake Game (Python)",
-      description: "Classic snake game built using Python with custom features.",
-      image: [snakegame],
-      techStack: ["Python", "Pygame"],
-      githubUrl: "https://github.com/Yatharth-Dubey/snake-game",
-      liveUrl: "#",
-      category: "Python"
-    }
-  ];
+  // rotate screenshots of the open project only
+  useEffect(() => {
+    if (paused || current.images.length < 2) return;
+    const t = setInterval(() => setImgIdx((i) => i + 1), 2800);
+    return () => clearInterval(t);
+  }, [current.id, current.images.length, paused]);
 
-  const categories = ['All', ...new Set(projects.map(p => p.category))];
-  
-  const filteredProjects = activeFilter === 'All' 
-    ? projects 
-    : projects.filter(p => p.category === activeFilter);
-  
-  const featuredProject = projects.find(p => p.featured);
-  const regularProjects = filteredProjects.filter(p => !p.featured);
+  const select = (id: string) => {
+    playClickSound();
+    setActiveId(id);
+    setImgIdx(0);
+  };
+
+  const onFilter = (c: string) => {
+    playClickSound();
+    setFilter(c);
+    setImgIdx(0);
+  };
+
+  const onKey = (e: React.KeyboardEvent) => {
+    const i = visible.findIndex((p) => p.id === current.id);
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") select(visible[(i + 1) % visible.length].id);
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft") select(visible[(i - 1 + visible.length) % visible.length].id);
+  };
+
+  // cursor-following glow on the stage
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
+  const ext = { target: "_blank", rel: "noopener noreferrer", onClick: playClickSound };
+  const address = current.live ? current.live.replace(/^https?:\/\//, "") : "no public demo";
 
   return (
     <section ref={sectionRef} id="projects" className="projects-section page-section">
-      <div className="projects-bg-blob projects-bg-blob-1"></div>
-      <div className="projects-bg-blob projects-bg-blob-2"></div>
-      
-      <div className="projects-container">
-        <div className="section-header">
-          <h2 className="section-title">Projects</h2>
-          <p className="section-subtitle">Some things I've built</p>
-        </div>
+      <div className="projects-bg-blob projects-bg-blob-1" />
+      <div className="projects-bg-blob projects-bg-blob-2" />
 
-        <div className="filter-tabs">
-          {categories.map(category => (
-            <button
-              key={category}
-              className={`filter-btn ${activeFilter === category ? 'active' : ''}`}
-              onClick={() => { playClickSound(); setActiveFilter(category) }}
-            >
-              {category}
+      <div className="projects-container">
+        <header className="px-head">
+          <h2 className="section-title" data-fx="decode">Things I've built</h2>
+          <p className="section-subtitle">
+            {projects.length} projects, from a school's daily tool to late-night experiments. Pick one to open it.
+          </p>
+        </header>
+
+        <div className="filter-tabs" role="tablist" aria-label="Filter projects">
+          {categories.map((c) => (
+            <button key={c} className={`filter-btn ${filter === c ? "active" : ""}`} onClick={() => onFilter(c)}>
+              {c}
             </button>
           ))}
         </div>
 
-        {featuredProject && activeFilter === 'All' && (
-          <div className="featured-project">
-            <div className="featured-card">
-              <div className="featured-image-wrapper">
-                <div className="image-slider">
-                <div
-                  className="image-track"
-                  style={{
-                    transform: `translateX(-${(imageIndexes[featuredProject.id] || 0) * 100}%)`
-                  }}
+        <div className="px-layout" onKeyDown={onKey}>
+          <ul className="px-list" data-fx="stagger" role="tablist" aria-orientation="vertical">
+            {visible.map((p) => (
+              <li key={p.id}>
+                <button
+                  role="tab"
+                  aria-selected={p.id === current.id}
+                  className={`px-item ${p.id === current.id ? "is-active" : ""}`}
+                  onClick={() => select(p.id)}
                 >
-                  {featuredProject.image.map((img, i) => (
-                    <img key={i} src={img} className="slide-image" />
-                  ))}
-                </div>
-              </div>
-              </div>
-              <div className="featured-content">
-                <div className="featured-badge">Featured Project</div>
-                <h3 className="featured-title">{featuredProject.title}</h3>
-                <p className="featured-description">{featuredProject.description}</p>
-                <div className="featured-tech">
-                  {featuredProject.techStack.map((tech, idx) => (
-                    <span key={idx} className="tech-tag">{tech}</span>
-                  ))}
-                </div>
-                <div className="featured-actions">
-                  <a
-                    href={featuredProject.githubUrl !== "#" ? featuredProject.githubUrl : undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`action-link ${featuredProject.githubUrl === "#" ? "disabled tooltip" : ""}`}
-                    data-tooltip={featuredProject.githubUrl === "#" ? "Private Repository • Contact for access" : "View on GitHub"}
-                    onClick={(e) => {
-                      if (featuredProject.githubUrl === "#") {
-                        e.preventDefault();
-                      } else {
-                        playClickSound();
-                      }
-                    }}
-                  >
-                    <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-                    </svg>
-                    GitHub
-                  </a>
-                  <a
-                    href={featuredProject.liveUrl !== "#" ? featuredProject.liveUrl : undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`action-link ${featuredProject.liveUrl === "#" ? "disabled tooltip" : ""}`}
-                    data-tooltip={featuredProject.liveUrl === "#" ? "In Use • Contact for preview" : "View Live"}
-                    onClick={(e) => {
-                      if (featuredProject.liveUrl === "#") {
-                        e.preventDefault();
-                      } else {
-                        playClickSound();
-                      }
-                    }}
-                  >
-                    <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeLinecap="round"/>
-                      <polyline points="15 3 21 3 21 9" stroke="currentColor" strokeLinecap="round"/>
-                      <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" strokeLinecap="round"/>
-                    </svg>
-                    Live
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+                  <span className={`px-dot px-dot--${p.status}`} aria-hidden />
+                  <span className="px-item-text">
+                    <span className="px-item-title">{p.title}</span>
+                    <span className="px-item-tag">{p.tagline}</span>
+                  </span>
+                  <span className="px-item-year">{p.year ?? ""}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
 
-        <div className="projects-grid">
-          {regularProjects.map(project => (
-            <div key={project.id} className="project-card">
-              <div className="card-image-wrapper">
-                <div className="image-slider">
-                  <div
-                    className="image-track"
-                    style={{
-                      transform: `translateX(-${(imageIndexes[project.id] || 0) * 100}%)`
-                    }}
-                  >
-                    {project.image.map((img, i) => (
-                      <img key={i} src={img} className="slide-image" />
+          <div className="px-stage" ref={stageRef} onMouseMove={onMove} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+            <div className="px-window">
+              <div className="px-chrome">
+                <span className="px-lights"><i /><i /><i /></span>
+                <span className="px-address">{address}</span>
+                <span className={`px-status px-status--${current.status}`}>{STATUS_LABEL[current.status]}</span>
+              </div>
+              <div className="px-screen">
+                {shot ? (
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={current.id + shot}
+                      src={shot}
+                      alt={`${current.title} screenshot`}
+                      className="px-shot"
+                      initial={{ opacity: 0, scale: 1.04, filter: "blur(6px)" }}
+                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    />
+                  </AnimatePresence>
+                ) : (
+                  <div className="px-placeholder">
+                    <span>Screenshots coming soon</span>
+                  </div>
+                )}
+                {current.images.length > 1 && (
+                  <div className="px-pips">
+                    {current.images.map((_, i) => (
+                      <button
+                        key={i}
+                        aria-label={`Screenshot ${i + 1}`}
+                        className={i === imgIdx % current.images.length ? "on" : ""}
+                        onClick={() => setImgIdx(i)}
+                      />
                     ))}
                   </div>
-                </div>
-              </div>
-              <div className="card-content">
-                <h3 className="card-title">{project.title}</h3>
-                <p className="card-description">{project.description}</p>
-                <div className="card-tech">
-                  {project.techStack.map((tech, idx) => (
-                    <span key={idx} className="tech-tag">{tech}</span>
-                  ))}
-                </div>
-                <div className="card-actions">
-                  <a
-                    href={project.githubUrl !== "#" ? project.githubUrl : undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`action-link ${project.githubUrl === "#" ? "disabled tooltip" : ""}`}
-                    data-tooltip={project.githubUrl === "#" ? "Private Repository • Contact for access" : "View on GitHub"}
-                    onClick={(e) => {
-                      if (project.githubUrl === "#") {
-                        e.preventDefault();
-                      } else {
-                        playClickSound();
-                      }
-                    }}
-                  >
-                    <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-                    </svg>
-                    GitHub
-                  </a>
-                  <a
-                    href={project.liveUrl !== "#" ? project.liveUrl : undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`action-link ${project.liveUrl === "#" ? "disabled tooltip" : ""}`}
-                    data-tooltip={project.liveUrl === "#" ? "Contact for preview" : "View Live"}
-                    onClick={(e) => {
-                      if (project.liveUrl === "#") {
-                        e.preventDefault();
-                      } else {
-                        playClickSound();
-                      }
-                    }}
-                  >
-                    <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeLinecap="round"/>
-                      <polyline points="15 3 21 3 21 9" stroke="currentColor" strokeLinecap="round"/>
-                      <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" strokeLinecap="round"/>
-                    </svg>
-                    Live
-                  </a>
-                </div>
+                )}
               </div>
             </div>
-          ))}
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current.id}
+                className="px-info"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3 className="px-title">{current.title}</h3>
+                {current.role && <p className="px-role">{current.role}</p>}
+                <p className="px-desc">{current.description}</p>
+                {current.highlight && <p className="px-highlight">{current.highlight}</p>}
+                <div className="px-tech">
+                  {current.tech.map((t) => (
+                    <span key={t} className="tech-tag">{t}</span>
+                  ))}
+                </div>
+                <div className="px-links">
+                  {current.live && (
+                    <a className="px-btn px-btn--solid" href={current.live} {...ext}>
+                      <ExternalLink size={16} /> Live project
+                    </a>
+                  )}
+                  {current.caseStudy && (
+                    <a className="px-btn" href={current.caseStudy} {...ext}>
+                      <BookOpen size={16} /> Case study
+                    </a>
+                  )}
+                  {current.figma && (
+                    <a className="px-btn" href={current.figma} {...ext}>
+                      <Palette size={16} /> Figma
+                    </a>
+                  )}
+                  {current.github && (
+                    <a className="px-btn" href={current.github} {...ext}>
+                      <GitHubIcon /> Source code
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>
