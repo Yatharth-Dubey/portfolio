@@ -124,7 +124,7 @@ export const projects: Project[] = [
     images: [rbs1, rbs2, rbs3, rbs4, rbs5],
     tech: ["React", "Express", "MySQL", "JWT", "Bcrypt"],
     github: "https://github.com/Yatharth-Dubey/RbsKidsManagement",
-    live: "https://rbs.eduguruji.com/",
+    // live: "https://rbs.eduguruji.com/",
   },
   {
     id: "typeace",
